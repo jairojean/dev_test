@@ -55,7 +55,6 @@ Caso essa resposta aconteça, a postagem foi cadastrada com sucesso no banco de 
 Exemplo de resposta:
 ```
 {
-  "id": 1,
   "title": "Título da Postagem",
   "description": "Descrição da Postagem",
   "user": {
@@ -71,6 +70,6 @@ Essa falha ocorre quando algum campo obrigatório está ausente ou contém valor
 Exemplo de resposta:
 ```
 {
-  "error": "Campos obrigatórios ausentes ou inválidos"
+    "message": "Campos obrigatórios não preenchidos"
 }
 ```
