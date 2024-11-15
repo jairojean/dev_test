@@ -6,7 +6,7 @@ Esta API permite criar novos usuários e postagens associadas a esses usuários.
 #### POST /users
 Esse endpoint é responsável por inserir novos usuários no banco de dados.
 
-#### Corpo da requisição
+##### Corpo da requisição
 ```
 {
   "firstName": "Nome do Usuário",
@@ -14,7 +14,7 @@ Esse endpoint é responsável por inserir novos usuários no banco de dados.
   "email": "email@exemplo.com"
 }
 ```
-#### Respostas
+#####  Respostas
 ##### OK 201
 Caso essa resposta aconteça, o usuário foi cadastrado com sucesso no banco de dados.
 
@@ -28,7 +28,7 @@ Exemplo de resposta:
 }
 ```
 
-##### Falha na autenticação!400
+##### Falha na requisição !400
 Essa falha ocorre quando algum campo obrigatório está ausente ou contém valores inválidos.
 Exemplo de resposta:
 ```
@@ -37,10 +37,10 @@ Exemplo de resposta:
 }
 ```
 
-#### POST /post
+#### POST /posts
 Esse endpoint é responsável por inserir novas postagens no banco de dados, associando-as a um usuário existente.
 
-#### Corpo da requisição
+##### Corpo da requisição
 ```
 {
   "title": "Título da Postagem",
@@ -62,7 +62,8 @@ Exemplo de resposta:
     "firstName": "Nome do Usuário",
     "lastName": "Sobrenome do Usuário",
     "email": "email@exemplo.com"
-  }
+  },
+   "id": 4
 }
 ```
 ##### Falha na autenticação!400
@@ -79,7 +80,7 @@ Exemplo de resposta:
 #### GET /users
  Esse endpoint é responsável por buscar e retornar todos os usuários cadastrados no banco de dados.
 
-#### Corpo da requisição
+##### Corpo da requisição
 Nenhum corpo é necessário para essa requisição.
 
 #### Respostas
@@ -116,10 +117,10 @@ Exemplo de resposta:
 
 #### GET /users/:id
  Esse endpoint é responsável por buscar e retornar um usuário específico com base no id fornecido como parâmetro de rota.
-#### Parâmetros de Rota
+#####  Parâmetros de Rota
 id (número): O identificador único do usuário que será buscado.
 
-#### Respostas
+#####  Respostas
 ##### OK 200
 Caso essa resposta aconteça, o usuário foi encontrado com sucesso e retornado.
 
@@ -166,7 +167,7 @@ Exemplo de resposta:
 #### Parâmetros de Rota
 id (número): O identificador único do usuário que será deletado.
 
-#### Respostas
+#####  Respostas
 ##### OK 200
 Caso essa resposta aconteça, o usuário foi deletado com sucesso.
 
@@ -220,7 +221,7 @@ id (número): O identificador único do usuário que será atualizado.
 ```
 Os campos no corpo da requisição são opcionais. Caso algum campo não seja fornecido, o valor atual do usuário será mantido para aquele campo.
 
-#### Respostas
+#####  Respostas
 ##### OK 200
 Caso essa resposta aconteça, o usuário foi atualizado com sucesso.
 
@@ -260,6 +261,217 @@ Exemplo de resposta:
 ```
 {
   "message": "Erro ao atualizar usuário",
+  "error": "Detalhes do erro"
+}
+```
+
+
+#### GET /posts
+ Esse endpoint é responsável por buscar e retornar todas as postagens cadastradas no banco de dados, incluindo as informações do usuário associado a cada postagem.
+
+#### Corpo da requisição
+Nenhum corpo é necessário para essa requisição.
+
+#####  Respostas
+##### OK 200
+Caso essa resposta aconteça, todas as postagens foram recuperadas com sucesso do banco de dados.
+
+Exemplo de resposta:
+```
+[
+  {
+    "id": 1,
+    "title": "Título da Postagem",
+    "description": "Descrição da Postagem",
+    "user": {
+      "id": 1,
+      "firstName": "Nome do Usuário",
+      "lastName": "Sobrenome do Usuário",
+      "email": "email@gmail.com"
+    }
+  },
+  {
+    "id": 2,
+    "title": "Postagem2",
+    "description": "Descrição da Postagem2",
+    "user": {
+      "id": 2,
+      "firstName": "Nome2",
+      "lastName": " Sobrenome2",
+      "email": "email2@gmail.com"
+    }
+  }
+]
+```
+##### Erro interno 500
+Essa falha ocorre quando há um problema ao tentar recuperar as postagens no banco de dados.
+
+Exemplo de resposta:
+```
+{
+  "message": "Erro ao buscar postagens",
+  "error": "Detalhes do erro"
+}
+```
+
+#### GET /posts/:id
+Esse endpoint é responsável por buscar e retornar uma postagem específica com base no id fornecido como parâmetro de rota, incluindo as informações do usuário associado à postagem.
+#### Parâmetros de Rota
+id (número): O identificador único da postagem que será buscada.
+
+#####  Respostas
+##### OK 200
+Caso essa resposta aconteça, a postagem foi encontrada com sucesso, e as informações da postagem e do usuário associado são retornadas.
+
+Exemplo de resposta:
+```
+{
+  "id": 1,
+  "title": "Título da Postagem",
+  "description": "Descrição da Postagem",
+  "user": {
+    "id": 1,
+    "firstName": "Nome do Usuário",
+    "lastName": "Sobrenome do Usuário",
+    "email": "email@exemplo.com"
+  }
+}
+```
+##### Falha na requisição 400
+Essa falha ocorre quando o id fornecido não é um número válido.
+
+Exemplo de resposta:
+```
+{
+  "message": "ID inválido"
+}
+```
+##### Postagem não encontrada 404
+Essa falha ocorre quando não existe uma postagem com o id fornecido.
+
+Exemplo de resposta:
+```
+{
+  "message": "Postagem não encontrada"
+}
+```
+##### Erro interno do servidor 500
+Essa falha ocorre quando há um problema ao tentar recuperar a postagem no banco de dados.
+
+Exemplo de resposta:
+```
+{
+  "message": "Erro ao buscar postagem",
+  "error": "Detalhes do erro"
+}
+```
+
+#### DELETE /users/:id
+Esse endpoint é responsável por excluir uma postagem específica com base no id fornecido como parâmetro de rota.
+#### Parâmetros de Rota
+id (número): O identificador único da postagem que será deletada.
+
+#####  Respostas
+##### OK 200
+Caso essa resposta aconteça, a postagem foi deletada com sucesso do banco de dados.
+
+Exemplo de resposta:
+```
+{
+  "message": "Postagem deletada com sucesso"
+}
+```
+##### Falha na requisição 400
+Essa falha ocorre quando o id fornecido não é um número válido.
+
+Exemplo de resposta:
+```
+{
+  "message": "ID inválido"
+}
+```
+##### Postagem não encontrada 404
+Essa falha ocorre quando não existe uma postagem com o id fornecido.
+
+Exemplo de resposta:
+```
+{
+  "message": "Postagem não encontrada"
+}
+```
+##### Erro interno do servidor 500
+Essa falha ocorre quando há um problema ao tentar deletar a postagem no banco de dados.
+
+Exemplo de resposta:
+```
+{
+  "message": "Erro ao deletar postagem",
+  "error": "Detalhes do erro"
+}
+```
+
+#### PUT /posts/:id
+Esse endpoint é responsável por atualizar os detalhes de uma postagem específica com base no id fornecido como parâmetro de rota.
+
+#### Parâmetros de Rota
+id (número): O identificador único da postagem que será atualizada.
+#### Corpo da Requisição
+title (string): O título da postagem. Opcional, se não fornecido, o valor atual será mantido.
+description (string): A descrição da postagem. Opcional, se não fornecido, o valor atual será mantido
+
+Exemplo de Corpo da Requisição
+```
+{
+  "title": "Novo Título da Postagem",
+  "description": "Nova descrição da postagem"
+}
+```
+
+#####  Respostas
+##### OK 200
+Caso essa resposta aconteça, a postagem foi atualizada com sucesso.
+
+Exemplo de resposta:
+```
+{
+  "message": "Postagem atualizada com sucesso",
+  "post": {
+    "id": 1,
+    "title": "Novo título da Postagem",
+    "description": "Nova descrição da Postagem",
+    "user": {
+      "id": 1,
+      "firstName": "Nome do Usuário",
+      "lastName": "Sobrenome do Usuário",
+      "email": "email@exemplo.com"
+    }
+  }
+}
+```
+##### Falha na requisição 400
+Essa falha ocorre quando o id fornecido não é um número válido.
+
+Exemplo de resposta:
+```
+{
+  "message": "ID inválido"
+}
+```
+##### Postagem não encontrada 404
+Essa falha ocorre quando não existe uma postagem com o id fornecido.
+
+Exemplo de resposta:
+```
+{
+  "message": "Postagem não encontrada"
+}
+```
+##### Erro interno do servidor 500
+Essa falha ocorre quando há um problema ao tentar atualizar a postagem no banco de dados.
+Exemplo de resposta:
+```
+{
+  "message": "Erro ao atualizar postagem",
   "error": "Detalhes do erro"
 }
 ```

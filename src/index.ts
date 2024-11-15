@@ -144,7 +144,92 @@ app.put('/users/:id', async (req, res) => {
   }
 });
 
+app.get('/posts', async (req, res) => {
+  try {
+    const posts = await AppDataSource.manager.find(Post, {
+      relations: ['user'] 
+    });
+    return res.status(200).json(posts);
+  } catch (err) {
+    return res.status(500).json({ message: 'Erro ao buscar postagens', error: err });
+  }
+});
+
+app.get('/posts/:id', async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  
+  if (isNaN(id)) {
+    return res.status(400).json({ message: 'ID inválido' });
+  }
+  try {
+    const post = await AppDataSource.manager.findOne(Post, {
+      where: { id },
+      relations: ['user'] 
+    });
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Postagem não encontrada' });
+    }
+    return res.status(200).json(post);
+  } catch (err) {
+    return res.status(500).json({ message: 'Erro ao buscar postagem', error: err });
+  }
+});
+
+app.delete('/posts/:id', async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  
+  if (isNaN(id)) {
+    return res.status(400).json({ message: 'ID inválido' });
+  }
+  try {
+    const post = await AppDataSource.manager.findOne(Post, {
+      where: { id },
+      relations: ['user']
+    });
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Postagem não encontrada' });
+    }
+    await AppDataSource.manager.remove(Post, post);
+    return res.status(200).json({ message: 'Postagem deletada com sucesso' });
+  } catch (err) {
+    return res.status(500).json({ message: 'Erro ao deletar postagem', error: err });
+  }
+});
+
+app.put('/posts/:id', async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const { title, description } = req.body;
+
+  if (isNaN(id)) {
+    return res.status(400).json({ message: 'ID inválido' });
+  }
+
+  try {
+    const post = await AppDataSource.manager.findOne(Post, {
+      where: { id },
+      relations: ['user']
+    });
+
+    if (!post) {
+      return res.status(404).json({ message: 'Postagem não encontrada' });
+    }
+
+    post.title = title || post.title;
+    post.description = description || post.description;
+
+    await AppDataSource.manager.save(post);
+    return res.status(200).json({ message: 'Postagem atualizada com sucesso', post });
+  } catch (err) {
+    return res.status(500).json({ message: 'Erro ao atualizar postagem', error: err });
+  }
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
