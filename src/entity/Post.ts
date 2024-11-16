@@ -12,7 +12,10 @@ export class Post {
     @Column('varchar', { length: 100, nullable: false })
     description!: string;
 
-    @ManyToOne(() => User, user => user.posts, { nullable: false })
+    @ManyToOne(() => User, user => user.posts, { 
+        nullable: false,
+        onDelete: 'CASCADE'
+     })
     user!: User;
 }
  
